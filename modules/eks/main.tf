@@ -1,16 +1,12 @@
 resource "aws_eks_cluster" "main" {
   name     = var.cluster_name
-  role_arn = aws_iam_role.eks_cluster_role.arn  # Role ARN created for the EKS cluster
+  role_arn = aws_iam_role.eks_cluster_role.arn # Role ARN created for the EKS cluster
 
   vpc_config {
     subnet_ids = var.private_subnet_ids
   }
 
   version = var.eks_version
-
-  # depends_on = [
-  #   aws_http_token_policy.main,
-  # ]
 
   tags = {
     Name = var.cluster_name
@@ -20,7 +16,7 @@ resource "aws_eks_cluster" "main" {
 resource "aws_eks_node_group" "main" {
   cluster_name    = aws_eks_cluster.main.name
   node_group_name = "${var.cluster_name}-node-group"
-  node_role_arn   = aws_iam_role.eks_node_role.arn  # Role ARN created for the EKS nodes
+  node_role_arn   = aws_iam_role.eks_node_role.arn # Role ARN created for the EKS nodes
   subnet_ids      = var.private_subnet_ids
 
   scaling_config {

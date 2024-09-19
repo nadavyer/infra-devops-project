@@ -13,11 +13,11 @@ resource "helm_release" "argocd" {
 
   values = [
     templatefile("${path.module}/values.yaml.tpl", {
-      replicas             = var.replicas
-      server_service_type  = var.server_service_type
+      replicas            = var.replicas
+      server_service_type = var.server_service_type
     })
   ]
 
-  wait       = true
-  timeout    = 600
+  wait    = true
+  timeout = 600
 }
