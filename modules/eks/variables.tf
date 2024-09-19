@@ -1,13 +1,13 @@
 variable "cluster_name" {
-  description = "The name of the EKS cluster"
+  description = "The name of the project"
   type        = string
-    default     = "nadav-proj-eks-cluster"
+  default     = "nadav-project"
 }
 
 variable "eks_version" {
   description = "The desired Kubernetes version for the EKS cluster"
   type        = string
-  default     = "1.29"
+  default     = "1.30"
 }
 
 variable "private_subnet_ids" {

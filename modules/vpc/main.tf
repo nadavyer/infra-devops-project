@@ -58,7 +58,7 @@ resource "aws_route_table_association" "public_rta" {
 resource "aws_subnet" "private_subnet" {
   count             = 3
   vpc_id            = aws_vpc.main_vpc.id
-  cidr_block              = var.private_subnet_cidr[count.index]
+  cidr_block        = var.private_subnet_cidr[count.index]
   availability_zone = var.availability_zones[count.index]
   tags = {
     Name = "${var.project_name}_private_subnet_${count.index}"
