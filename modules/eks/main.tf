@@ -8,9 +8,9 @@ resource "aws_eks_cluster" "main" {
 
   version = var.eks_version
 
-  depends_on = [
-    aws_http_token_policy.eks,
-  ]
+  # depends_on = [
+  #   aws_http_token_policy.main,
+  # ]
 
   tags = {
     Name = var.cluster_name

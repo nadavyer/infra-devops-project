@@ -1,14 +1,14 @@
 terraform {
-  required_version = ">= 0.14"
+  required_version = ">= 1.9"
   backend "s3" {
     bucket = "nadav-project"
-    key    = "vpc/terraform.tfstate"
+    key    = "main/terraform.tfstate"
     region = "us-east-2"
   }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.0"
+      version = "~> 5.6"
     }
   }
 }
