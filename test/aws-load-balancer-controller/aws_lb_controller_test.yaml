@@ -1,0 +1,61 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test-nginx-namespace
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-nginx
+  namespace: test-nginx-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-nginx
+  template:
+    metadata:
+      labels:
+        app: test-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80  # Ensure the container exposes the right port
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-nginx
+  namespace: test-nginx-namespace
+spec:
+  type: ClusterIP
+  selector:
+    app: test-nginx
+  ports:
+    - port: 80          # Ensure this is greater than 0
+      targetPort: 80    # Matches the container port in your deployment
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-nginx-ingress
+  namespace: test-nginx-namespace
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: test-nginx
+                port:
+                  number: 80  # Ensure the service and port are correctly specified
