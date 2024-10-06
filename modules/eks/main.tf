@@ -9,7 +9,8 @@ resource "aws_eks_cluster" "main" {
   version = var.eks_version
 
   tags = {
-    Name = var.cluster_name
+    Name      = var.cluster_name
+    Terraform = true
   }
 }
 
@@ -23,6 +24,11 @@ resource "aws_eks_node_group" "main" {
     desired_size = 1
     max_size     = 3
     min_size     = 1
+  }
+
+  tags = {
+    Name      = "${var.cluster_name}-node"
+    Terraform = true
   }
 
   instance_types = ["t3.small"]

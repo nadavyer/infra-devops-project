@@ -48,7 +48,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
     - http:
         paths:

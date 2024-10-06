@@ -19,6 +19,7 @@ module "eks" {
   eks_version        = var.eks_version
   public_subnet_ids  = local.public_subnet_ids
   private_subnet_ids = local.private_subnet_ids
+  depends_on = [ module.vpc ]
 }
 
 # module "aws-load-balancer-controller" {
@@ -35,9 +36,12 @@ module "eks" {
 # }
 
 module "nginx-ingress-controller" {
-  source = "./modules/nginx-ingress-controller"
-  vpc_id = module.vpc.vpc_id
-  cluster_name = var.cluster_name
+  source                             = "./modules/nginx-ingress-controller"
+  vpc_id                             = module.vpc.vpc_id
+  cluster_name                       = var.cluster_name
   nginx_ingress_controller_namespace = var.nginx_ingress_controller_namespace
-  asg_name = module.eks.asg_name
+  asg_name                           = module.eks.asg_name
+  nodegroup_sg_id                    = "sg-02fa1c57138b0019e"
+
+  depends_on = [ module.eks ]
 }

@@ -11,6 +11,7 @@ data "aws_subnets" "public" {
 
   tags = {
     "kubernetes.io/role/elb" = "1"
+    Tier                     = "Public"
   }
 }
 
@@ -22,7 +23,7 @@ resource "kubernetes_namespace" "nginx" {
 
 # Security Group for ALB
 resource "aws_security_group" "alb_sg" {
-  name        = "alb-security-group"
+  name        = "${var.cluster_name}-ext-alb-sg"
   description = "Allow HTTP and HTTPS traffic"
   vpc_id      = data.aws_vpc.main.id
 
@@ -50,23 +51,23 @@ resource "aws_security_group" "alb_sg" {
 
 # ALB for the EKS Cluster
 resource "aws_lb" "main" {
-  name               = "main-alb"
+  name               = "${var.cluster_name}-ext-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
   subnets            = data.aws_subnets.public.ids
 }
 
-resource "aws_lb_target_group" "http" {
-  name        = "eks-http"
+resource "aws_lb_target_group" "workload" {
+  name        = "${var.cluster_name}-tg"
   target_type = "instance"
   port        = "30080"
   protocol    = "HTTP"
   vpc_id      = data.aws_vpc.main.id
 
   health_check {
-    path     = "/"
-    port     = "30080"
+    path     = "/healthz"
+    port     = "10256"
     protocol = "HTTP"
     matcher  = "200,404"
   }
@@ -84,8 +85,8 @@ resource "aws_lb_target_group" "http" {
 #   vpc_id      = data.aws_vpc.main.id
 
 #   health_check {
-#     path     = "/"
-#     port     = "30443"
+#     path     = "/healthz"
+#     port     = "10256"
 #     protocol = "HTTPS"
 #     matcher  = "200,404"
 #   }
@@ -95,14 +96,14 @@ resource "aws_lb_target_group" "http" {
 #   }
 # }
 
-resource "aws_lb_listener" "http" {
+resource "aws_lb_listener" "workload" {
   load_balancer_arn = aws_lb.main.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.http.arn
+    target_group_arn = aws_lb_target_group.workload.arn
   }
 }
 
@@ -116,17 +117,29 @@ resource "aws_lb_listener" "http" {
 #     type             = "forward"
 #     target_group_arn = aws_lb_target_group.https.arn
 #   }
-# }
+# }ß
 
 resource "aws_autoscaling_attachment" "asg_alb_attachment_http" {
   autoscaling_group_name = var.asg_name
-  lb_target_group_arn    = aws_lb_target_group.http.arn
+  lb_target_group_arn    = aws_lb_target_group.workload.arn
 }
 
 # resource "aws_autoscaling_attachment" "asg_alb_attachment_https" {
 #   autoscaling_group_name = "some-asg-name-123"
 #   lb_target_group_arn    = aws_lb_target_group.https.arn
 # }
+
+# Allow inbound HTTP traffic from the ALB to the EKS node group
+resource "aws_security_group_rule" "nodegroup_ingress_http" {
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 65535
+  protocol                 = "tcp"
+  security_group_id        = var.nodegroup_sg_id
+  source_security_group_id = aws_security_group.alb_sg.id
+}
+
+
 
 # Helm Release for NGINX Ingress Controller
 resource "helm_release" "nginx_ingress" {
@@ -174,4 +187,5 @@ resource "helm_release" "nginx_ingress" {
     name  = "controller.serviceAccount.name"
     value = "nginx-ingress-serviceaccount"
   }
+  depends_on = [ kubernetes_namespace.nginx ]
 }

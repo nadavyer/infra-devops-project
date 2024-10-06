@@ -3,14 +3,16 @@ resource "aws_vpc" "main_vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name = "${var.project_name}-vpc"
+    Name      = "${var.project_name}-vpc"
+    Terraform = true
   }
 }
 
 resource "aws_internet_gateway" "main_igw" {
   vpc_id = aws_vpc.main_vpc.id
   tags = {
-    Name = "${var.project_name}-igw"
+    Name      = "${var.project_name}-igw"
+    Terraform = true
   }
 }
 
@@ -23,6 +25,8 @@ resource "aws_subnet" "public_subnet" {
   tags = {
     Name                     = "${var.project_name}_public_subnet_${count.index}"
     "kubernetes.io/role/elb" = 1
+    Tier                     = "Public"
+    Terraform                = true
   }
 }
 
@@ -35,7 +39,8 @@ resource "aws_nat_gateway" "main_nat_gw" {
   allocation_id = aws_eip.nat_eip[count.index].id
   subnet_id     = aws_subnet.public_subnet[count.index].id
   tags = {
-    Name = "${var.project_name}_nat_gw_${count.index}"
+    Name      = "${var.project_name}_nat_gw_${count.index}"
+    Terraform = true
   }
 }
 
@@ -46,7 +51,8 @@ resource "aws_route_table" "public_route_table" {
     gateway_id = aws_internet_gateway.main_igw.id
   }
   tags = {
-    Name = "${var.project_name}_public_rt"
+    Name      = "${var.project_name}_public_rt"
+    Terraform = true
   }
 }
 
@@ -64,6 +70,8 @@ resource "aws_subnet" "private_subnet" {
   tags = {
     Name                              = "${var.project_name}_private_subnet_${count.index}"
     "kubernetes.io/role/internal-elb" = 1
+    Tier                              = "Private"
+    Terraform                         = true
   }
 }
 
@@ -75,7 +83,8 @@ resource "aws_route_table" "private_route_table" {
     nat_gateway_id = aws_nat_gateway.main_nat_gw[count.index].id
   }
   tags = {
-    Name = "${var.project_name}_private_rt"
+    Name      = "${var.project_name}_private_rt"
+    Terraform = true
   }
 }
 
