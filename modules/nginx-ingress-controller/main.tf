@@ -187,5 +187,5 @@ resource "helm_release" "nginx_ingress" {
     name  = "controller.serviceAccount.name"
     value = "nginx-ingress-serviceaccount"
   }
-  depends_on = [ kubernetes_namespace.nginx ]
+  depends_on = [kubernetes_namespace.nginx]
 }

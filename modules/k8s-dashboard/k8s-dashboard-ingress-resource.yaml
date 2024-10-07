@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: k8s-dashboard-ingress
+  namespace: ${namespace}
+  # annotations:
+  #   nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: ${ingressClassName}
+  rules:
+  - host: ${host}
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: kubernetes-dashboard-web
+            port:
+              number: 8000
+  # - host: ${host}
+  #   http:
+  #     paths:
+  #     - pathType: Prefix
+  #       path: "/k8s-dashboard/*"
+  #       backend:
+  #         service:
+  #           name: kubernetes-dashboard-web
+  #           port:
+  #             number: 8000

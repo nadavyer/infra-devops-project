@@ -1,0 +1,51 @@
+fullnameOverride: "flask-api-server"
+
+replicaCount: 1
+
+image:
+  repository: tiangolo/uwsgi-nginx-flask
+  tag: python3.8
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 5000  # Flask default port
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+env: []  # Add your environment variables here if needed
+
+serviceAccount:
+  create: false
+  name: ""
+  
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: 
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: "nadav-proj-cluster-ext-alb-1530607942.us-east-2.elb.amazonaws.com"
+      paths:
+        - path: "/testing"
+          pathType: Prefix
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

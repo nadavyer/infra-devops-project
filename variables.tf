@@ -42,3 +42,15 @@ variable "nginx_ingress_controller_namespace" {
   type        = string
   default     = "nginx"
 }
+
+variable "kube_state_metrics_namespace" {
+  description = "The namespace to deploy kube-state-metrics"
+  type        = string
+  default     = "kube-system"
+}
+
+variable "k8s_dashboard_namespace" {
+  description = "The namespace to install the Kubernetes Dashboard into"
+  type        = string
+  default     = "kube-system"
+}

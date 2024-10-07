@@ -25,3 +25,12 @@ output "asg_name" {
   value       = aws_eks_node_group.main.resources[0].autoscaling_groups[0].name
 }
 
+output "nodegroup_name" {
+  description = "The name of the EKS node group"
+  value       = aws_eks_node_group.main.node_group_name
+}
+
+output "cluster_sg_id" {
+  description = "The ID of the security group created by EKS for the cluster"
+  value       = aws_eks_cluster.main.vpc_config[0].cluster_security_group_id
+}
