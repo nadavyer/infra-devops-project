@@ -31,6 +31,39 @@ variable "kubeconfig_path" {
   default     = "~/.kube/config"
 }
 
+variable "node_group_instance_type" {
+  description = "The instance type for the worker nodes"
+  type        = string
+  default     = "t3.medium"
+  
+}
+
+variable "node_group_disk_size" {
+  description = "The disk size for the worker nodes"
+  type        = number
+  default     = 20
+  
+}
+
+variable "node_group_desired_size" {
+  description = "The desired number of worker nodes"
+  type        = number
+  default     = 1
+  
+}
+
+variable "node_group_max_size" {
+  description = "The maximum number of worker nodes"
+  type        = number
+  default     = 3
+}
+
+variable "node_group_min_size" {
+  description = "The minimum number of worker nodes"
+  type        = number
+  default     = 1
+}
+
 variable "aws_lb_controller_service_account_name" {
   description = "The name of the service account"
   type        = string

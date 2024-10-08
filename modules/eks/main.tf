@@ -21,21 +21,40 @@ resource "aws_eks_node_group" "main" {
   subnet_ids      = var.private_subnet_ids
 
   scaling_config {
-    desired_size = 2
-    max_size     = 3
-    min_size     = 2
+    desired_size = var.node_group_desired_size
+    max_size     = var.node_group_max_size
+    min_size     = var.node_group_min_size
   }
+
+  instance_types = [var.node_group_instance_type]
+  capacity_type = "SPOT" # | "ON_DEMAND"
+  disk_size = var.node_group_disk_size
 
   tags = {
     Name      = "${var.cluster_name}-node"
     Terraform = true
   }
 
-  instance_types = ["t3.small"]
-
   depends_on = [
     aws_eks_cluster.main,
   ]
+}
+
+data "aws_autoscaling_group" "asg" {
+  name = aws_eks_node_group.main.resources[0].autoscaling_groups[0].name
+
+  depends_on = [ aws_eks_node_group.main ]
+}
+
+resource "aws_autoscaling_group_tag" "nodes_group" {
+    autoscaling_group_name = data.aws_autoscaling_group.asg.name
+
+    tag {
+        key                 = "Name"
+        value               = "${var.cluster_name}-node"
+        propagate_at_launch = true
+    }
+    depends_on = [ data.aws_autoscaling_group.asg ]
 }
 
 resource "aws_iam_role" "eks_cluster_role" {
