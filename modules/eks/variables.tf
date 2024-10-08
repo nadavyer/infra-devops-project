@@ -33,7 +33,7 @@ variable "node_group_desired_size" {
   description = "The desired number of worker nodes"
   type        = number
   default     = 2
-  
+
 }
 
 variable "node_group_max_size" {
@@ -52,5 +52,5 @@ variable "node_group_disk_size" {
   description = "The disk size for the worker nodes"
   type        = number
   default     = 20
-  
+
 }

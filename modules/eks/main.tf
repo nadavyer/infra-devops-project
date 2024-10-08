@@ -27,8 +27,8 @@ resource "aws_eks_node_group" "main" {
   }
 
   instance_types = [var.node_group_instance_type]
-  capacity_type = "SPOT" # | "ON_DEMAND"
-  disk_size = var.node_group_disk_size
+  capacity_type  = "SPOT" # | "ON_DEMAND"
+  disk_size      = var.node_group_disk_size
 
   tags = {
     Name      = "${var.cluster_name}-node"
@@ -43,18 +43,18 @@ resource "aws_eks_node_group" "main" {
 data "aws_autoscaling_group" "asg" {
   name = aws_eks_node_group.main.resources[0].autoscaling_groups[0].name
 
-  depends_on = [ aws_eks_node_group.main ]
+  depends_on = [aws_eks_node_group.main]
 }
 
 resource "aws_autoscaling_group_tag" "nodes_group" {
-    autoscaling_group_name = data.aws_autoscaling_group.asg.name
+  autoscaling_group_name = data.aws_autoscaling_group.asg.name
 
-    tag {
-        key                 = "Name"
-        value               = "${var.cluster_name}-node"
-        propagate_at_launch = true
-    }
-    depends_on = [ data.aws_autoscaling_group.asg ]
+  tag {
+    key                 = "Name"
+    value               = "${var.cluster_name}-node"
+    propagate_at_launch = true
+  }
+  depends_on = [data.aws_autoscaling_group.asg]
 }
 
 resource "aws_iam_role" "eks_cluster_role" {
