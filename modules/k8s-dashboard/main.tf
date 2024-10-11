@@ -6,23 +6,23 @@ resource "helm_release" "kubernetes_dashboard" {
   namespace  = var.k8s_dashboard_namespace
 
   set {
-      name  = "app.ingress.enabled"
-      value = "false"
+    name  = "app.ingress.enabled"
+    value = "false"
   }
 
   set {
-      name  = "app.ingress.ingressClassName"
-      value = var.ingress_class_name
+    name  = "app.ingress.ingressClassName"
+    value = var.ingress_class_name
   }
 
   set {
-      name  = "app.ingress.hosts[0]"
-      value = var.ingress_host
+    name  = "app.ingress.hosts[0]"
+    value = var.ingress_host
   }
 
   set {
-      name  = "app.ingress.tls.enabled"
-      value = "false"
+    name  = "app.ingress.tls.enabled"
+    value = "false"
   }
 
   set {
@@ -31,10 +31,10 @@ resource "helm_release" "kubernetes_dashboard" {
   }
 }
 
-  # set {
-  #     name  = "app.ingress.path"
-  #     value = "/k8s-dashboard"
-  # }
+# set {
+#     name  = "app.ingress.path"
+#     value = "/k8s-dashboard"
+# }
 
 
 # resource "kubernetes_manifest" "dashboard" {
