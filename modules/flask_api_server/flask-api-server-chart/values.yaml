@@ -3,8 +3,8 @@ fullnameOverride: "flask-api-server"
 replicaCount: 1
 
 image:
-  repository: tiangolo/uwsgi-nginx-flask
-  tag: python3.8
+  repository: kennethreitz/httpbin
+  tag: latest
   pullPolicy: IfNotPresent
 
 service:
@@ -13,11 +13,11 @@ service:
 
 resources:
   limits:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 100m
+    memory: 128Mi
   requests:
-    cpu: 250m
-    memory: 256Mi
+    cpu: 50m
+    memory: 64Mi
 
 nodeSelector: {}
 
@@ -48,4 +48,4 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 70
