@@ -19,11 +19,17 @@ variable "chart_version" {
 variable "replicas" {
   description = "Number of replicas for ArgoCD application controllers"
   type        = number
-  default     = 3
+  default     = 1
 }
 
 variable "server_service_type" {
   description = "Service type for ArgoCD server"
   type        = string
   default     = "ClusterIP"
+}
+
+variable "server_insecure" {
+  description = "Whether to disable TLS verification for the ArgoCD server"
+  type        = bool
+  default     = true
 }
