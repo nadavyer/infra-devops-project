@@ -1,5 +1,6 @@
 global:
-  domain: argocd.pg.naturalint.com
+  domain: argocd.naturalint.com
+  kubeVersionOverride: ${k8s_version}
 
 certificate:
   enabled: false
@@ -22,8 +23,8 @@ server:
   insecure: true
   ingress:
     enabled: true
-    annotations: 
-      external-dns.alpha.kubernetes.io/target: internal-alb-int-playground-v1-27-3-eks-1554844771.us-east-2.elb.amazonaws.com
+    annotations: {} 
+      # external-dns.alpha.kubernetes.io/target: internal-alb-int-playground-v1-27-3-eks-1554844771.us-east-2.elb.amazonaws.com
     ingressClassName: nginx-int-alb
     tls: false
 

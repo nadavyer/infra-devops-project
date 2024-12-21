@@ -4,6 +4,13 @@ variable "kubeconfig" {
   default     = "~/.kube/config"
 }
 
+variable "k8s_version" {
+  description = "The Kubernetes version"
+  type        = string
+  default     = "1.30"
+
+}
+
 variable "namespace" {
   description = "Namespace where ArgoCD will be installed"
   type        = string
@@ -32,4 +39,10 @@ variable "server_insecure" {
   description = "Whether to disable TLS verification for the ArgoCD server"
   type        = bool
   default     = true
+}
+
+variable "git_repo_url" {
+  description = "URL of the Git repository to be used by ArgoCD"
+  type        = string
+
 }
