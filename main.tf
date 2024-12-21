@@ -36,7 +36,7 @@ module "nginx-ingress-controller" {
   vpc_id                             = module.vpc.vpc_id
   cluster_name                       = var.cluster_name
   nginx_ingress_controller_namespace = var.nginx_ingress_controller_namespace
-  asg_name                           = module.eks.asg_name
+  asg_name                           = module.eks_nodegroup.nodegroup_name
   nodegroup_sg_id                    = module.eks.cluster_sg_id
 
   depends_on = [module.eks_nodegroup]

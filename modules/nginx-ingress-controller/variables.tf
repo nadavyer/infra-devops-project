@@ -14,13 +14,11 @@ variable "nginx_ingress_controller_namespace" {
   default     = "nginx"
 }
 
-
 variable "asg_name" {
   description = "The name of the Auto Scaling Group created for the EKS node group"
   type        = string
 
 }
-
 
 variable "nodegroup_sg_id" {
   description = "The ID of the security group associated with the EKS node group"
