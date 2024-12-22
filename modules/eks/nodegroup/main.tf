@@ -30,16 +30,14 @@ data "aws_autoscaling_groups" "asg" {
 }
 
 resource "aws_autoscaling_group_tag" "nodes_group" {
-  for_each = toset(data.aws_autoscaling_groups.asg.names)
-
-  autoscaling_group_name = each.value
+  autoscaling_group_name = data.aws_autoscaling_groups.asg.names[0]
 
   tag {
     key                 = "Name"
     value               = "${var.cluster_name}-node"
     propagate_at_launch = true
   }
-  depends_on = [data.aws_autoscaling_groups.asg]
+  depends_on = [aws_eks_node_group.main]
 }
 
 resource "aws_iam_role" "eks_node_role" {

@@ -22,6 +22,7 @@ module "eks" {
 module "eks_nodegroup" {
   source                   = "./modules/eks/nodegroup"
   cluster_name             = var.cluster_name
+  private_subnet_ids       = module.vpc.private_subnet_ids
   node_group_instance_type = var.node_group_instance_type
   node_group_desired_size  = var.node_group_desired_size
   node_group_min_size      = var.node_group_min_size
