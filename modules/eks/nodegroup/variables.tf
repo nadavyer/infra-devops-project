@@ -4,6 +4,25 @@ variable "cluster_name" {
   default     = "nadav-project"
 }
 
+variable "ami_type" {
+  description = "The type of the AMI"
+  type        = string
+  default     = "AL2023_x86_64_STANDARD"
+}
+
+variable "ng_name_suffix" {
+  description = "The suffix for the node group name"
+  type        = string
+  default     = "ng"
+
+}
+
+variable "node_name_suffix" {
+  description = "The suffix for the node name"
+  type        = string
+  default     = "node"
+}
+
 variable "private_subnet_ids" {
   description = "The IDs of the private subnets"
   type        = list(string)
@@ -30,6 +49,13 @@ variable "node_group_desired_size" {
 
 }
 
+variable "ignore_desired_size_changes" {
+  description = "Whether to ignore changes to the desired size - useful for managing the desired size outside of Terraform e.g. with cluster-autoscaler"
+  type        = bool
+  default     = false
+
+}
+
 variable "node_group_max_size" {
   description = "The maximum number of worker nodes"
   type        = number
@@ -40,6 +66,13 @@ variable "node_group_min_size" {
   description = "The minimum number of worker nodes"
   type        = number
   default     = 1
+}
+
+variable "capacity_type" {
+  description = "The capacity type for the worker nodes"
+  type        = string
+  default     = "SPOT" # | "ON_DEMAND"
+
 }
 
 variable "node_group_disk_size" {

@@ -1,6 +1,6 @@
 resource "aws_eks_node_group" "main" {
   cluster_name    = var.cluster_name
-  node_group_name = "${var.cluster_name}-ng"
+  node_group_name = "${var.cluster_name}-${var.ng_name_suffix}"
   node_role_arn   = aws_iam_role.eks_node_role.arn
   subnet_ids      = var.private_subnet_ids
 
@@ -8,14 +8,15 @@ resource "aws_eks_node_group" "main" {
     desired_size = var.node_group_desired_size
     max_size     = var.node_group_max_size
     min_size     = var.node_group_min_size
+
   }
 
   instance_types = [var.node_group_instance_type]
-  capacity_type  = "SPOT" # | "ON_DEMAND"
+  capacity_type  = var.capacity_type
   disk_size      = var.node_group_disk_size
 
   tags = {
-    Name      = "${var.cluster_name}-node"
+    Name      = "${var.cluster_name}-${var.node_name_suffix}"
     Terraform = true
   }
 }
@@ -34,7 +35,7 @@ resource "aws_autoscaling_group_tag" "nodes_group" {
 
   tag {
     key                 = "Name"
-    value               = "${var.cluster_name}-node"
+    value               = "${var.cluster_name}-${var.node_name_suffix}"
     propagate_at_launch = true
   }
   depends_on = [aws_eks_node_group.main]
@@ -71,3 +72,5 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
+
+

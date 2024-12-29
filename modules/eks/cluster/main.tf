@@ -1,12 +1,40 @@
+################################################################################
+# Cluster
+################################################################################
+
 resource "aws_eks_cluster" "main" {
   name     = var.cluster_name
   role_arn = aws_iam_role.eks_cluster_role.arn
+  version  = var.eks_version
 
+  enabled_cluster_log_types = var.cluster_enabled_log_types
+
+  access_config {
+    authentication_mode                         = var.authentication_mode
+    bootstrap_cluster_creator_admin_permissions = true
+
+  }
   vpc_config {
-    subnet_ids = var.private_subnet_ids
+    subnet_ids              = var.private_subnet_ids
+    endpoint_private_access = var.cluster_endpoint_public_access ? false : true
+    endpoint_public_access  = var.cluster_endpoint_public_access
+  }
+  kubernetes_network_config {
+    ip_family = var.ip_family
+    elastic_load_balancing {
+      enabled = var.enable_elb
+    }
   }
 
-  version = var.eks_version
+  storage_config {
+    block_storage {
+      enabled = var.enable_ebs
+    }
+  }
+
+  compute_config {
+    enabled = var.enable_compute_type
+  }
 
   tags = {
     Name      = var.cluster_name

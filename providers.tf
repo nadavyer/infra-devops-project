@@ -4,6 +4,7 @@ terraform {
     bucket = "nadav-project"
     key    = "main/terraform.tfstate"
     region = "us-east-2"
+    # dynamodb_table = "terraform-lock-table" # Uncomment this line if you want to use DynamoDB for locking - make sure you create the table first
   }
   required_providers {
     aws = {
@@ -25,12 +26,16 @@ provider "aws" {
   region = var.region
 }
 
+locals {
+  kubeconfig_exists = fileexists(var.kubeconfig_path)
+}
+
 provider "kubernetes" {
-  config_path = var.kubeconfig_path
+  config_path = local.kubeconfig_exists ? var.kubeconfig_path : null
 }
 
 provider "helm" {
   kubernetes {
-    config_path = var.kubeconfig_path
+    config_path = local.kubeconfig_exists ? var.kubeconfig_path : null
   }
 }

@@ -27,6 +27,7 @@ resource "aws_subnet" "public_subnet" {
     "kubernetes.io/role/elb" = 1
     Tier                     = "Public"
     Terraform                = true
+
   }
 }
 
